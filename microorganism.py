@@ -1,7 +1,4 @@
 import sys
-import pdb
-
-
 
 class Colony():
     def __init__(self, x,y,n,d):
