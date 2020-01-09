@@ -122,6 +122,8 @@ if __name__=='__main__':
         for d in range(D):
             prt_list.append(input().replace(' ', ''))
 
+        W = len(prt_list[0])
+
         p = Protection(prt_list, K)
         if p.count_pass() == W:
             print ('#{} {}'.format(test_case, 0))
