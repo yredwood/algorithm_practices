@@ -31,7 +31,7 @@ class Protection():
 def argsort(seq):
     return sorted(range(len(seq)), key=seq.__getitem__)
             
-def step(prt_list, K, n_step):
+def _step(prt_list, K, n_step):
     D = len(prt_list)
     W = len(prt_list[0])
     
@@ -70,11 +70,54 @@ def step(prt_list, K, n_step):
     
     return False
 
+def step(prt_list, K, n_step):
+    D = len(prt_list)
+    W = len(prt_list[0])
+
+    pairs = itertools.combinations([i+1 for i in range(D)], n_step)
+    for tup in pairs:
+        # theres len(tup)**2 subtuples
+        if K > 2 * n_step:
+            subtuples = []
+            msign_idx = itertools.combinations([0,1], len(tup))
+            for m in msign_idx:
+                # m: (0,1,0,0)
+                _sub = []
+                for _i, _m in enumerate(m):
+                    if _m:
+                        _sub.append(tup[_i])
+                    else:
+                        _sub.append(-tup[_i])
+                subtuples.append(_sub)
+        else:
+            subtuples = []
+            _sub = list(tup)
+            subtuples.append(_sub)
+            subtuples.append([-s for s in _sub])
+        
+        for _t in subtuples:
+            new_prt = prt_list.copy()
+            for t in _t:
+                if t > 0:
+                    new_prt[t-1] = '0'*W
+                else:
+                    new_prt[-t-1] = '1'*W
+
+            p = Protection(new_prt, K)
+            score = p.count_pass()
+            if score == W:
+                return True
+    
+    return False
+
+
 
 if __name__=='__main__':
 
-    sys.stdin = open('newsample.txt', 'r')
+#    sys.stdin = open('newsample.txt', 'r')
+    sys.stdin = open('sample_input.txt', 'r')
     T = int(input())
+    T = 10
     for test_case in range(1, T+1):
         #t0 = time.time()
         D, W, K = map(int, input().split(' '))
