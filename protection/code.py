@@ -85,6 +85,22 @@ def step(prt_list, D, W, K, n_step, scores_a, scores_b):
     
     for i, tup in enumerate(sorted_pairs):
         #print (tup, sorted_scores[i])
+
+        positive_tups = []
+        flag = 0
+        for t in tup:
+            if t > 0:
+                _t = t-1
+            else:
+                _t = -t-1
+            if _t in positive_tups:
+                flag = 1 
+
+            positive_tups.append(_t)
+        if flag:
+            continue
+
+
         new_prt = prt_list.copy()
         for t in tup:
             if t > 0:
@@ -103,7 +119,7 @@ def step(prt_list, D, W, K, n_step, scores_a, scores_b):
 
 if __name__=='__main__':
 
-    sys.stdin = open('sample_input.txt', 'r')
+    sys.stdin = open('newsample.txt', 'r')
     T = int(input())
     for test_case in range(1, T+1):
 
