@@ -9,14 +9,15 @@ class Protection():
         self.W = W
         self.K = K
         self.p = prt_list
-#        assert len(self.p) == D
+        assert len(self.p) == D
         
         self.p_T = []
         for w in range(W):
             self.p_T.append(
                 ''.join([p[w] for p in prt_list])
             )
-#        assert len(self.p_T) == W
+        assert len(self.p_T) == W
+
 #        print (self.p)
 #        print (self.p_T)
         
@@ -30,7 +31,7 @@ class Protection():
 
     def count_pass(self):
         cnt = 0
-        for w in range(W):
+        for w in range(self.W):
             if '0'*self.K in self.p_T[w] or '1'*self.K in self.p_T[w]:
                 cnt+=1
         return cnt
@@ -60,7 +61,7 @@ def argsort(seq):
     return sorted(range(len(seq)), key=seq.__getitem__)
             
 def step(prt_list, D, W, K, n_step, scores_a, scores_b):
-    #assert n_step > 0 and n_step < K
+    assert n_step > 0 and n_step < K
     
     a_list = [i+1 for i in range(D)]
     b_list = [-i-1 for i in range(D)]
