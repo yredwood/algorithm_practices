@@ -9,24 +9,15 @@ class Protection():
         self.W = W
         self.K = K
         self.p = prt_list
-        assert len(self.p) == D
+        #assert len(self.p) == D
         
         self.p_T = []
         for w in range(W):
             self.p_T.append(
                 ''.join([p[w] for p in prt_list])
             )
-        assert len(self.p_T) == W
-
-#        print (self.p)
-#        print (self.p_T)
-        
+        #assert len(self.p_T) == W
         # a: 0, b: 1
-
-#    def priority_idx(self):
-#        # for each depth, set the priority
-#        # from decreasing/increasing amount when replacing each block 
-#        control_cnt = self.count_pass()
 
 
     def count_pass(self):
@@ -61,7 +52,6 @@ def argsort(seq):
     return sorted(range(len(seq)), key=seq.__getitem__)
             
 def step(prt_list, D, W, K, n_step, scores_a, scores_b):
-    assert n_step > 0 and n_step < K
     
     a_list = [i+1 for i in range(D)]
     b_list = [-i-1 for i in range(D)]
@@ -116,7 +106,6 @@ def step(prt_list, D, W, K, n_step, scores_a, scores_b):
     return False
 
 
-
 if __name__=='__main__':
 
     sys.stdin = open('newsample.txt', 'r')
@@ -137,8 +126,11 @@ if __name__=='__main__':
         scores_a, scores_b = get_priority_idx(prt_list, D, W, K)
         #print ('{} / {}'.format(p.count_pass(), p.W))
         
-        for s in range(1, K):
-            result = step(prt_list, D, W, K, s, scores_a, scores_b)
+        for s in range(1, K+1):
+            try:
+                result = step(prt_list, D, W, K, s, scores_a, scores_b)
+            except:
+                result = 0
             if result:
                 break
         if not result:
