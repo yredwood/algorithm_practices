@@ -79,9 +79,11 @@ def step(prt, n_step, scores_a, scores_b, k):
         new_p = prt.copy()
         for t in tup:
             if t > 0:
-                new_p[t-1] = '0'*len(prt[0])
+                assert len(new_p[t-1]) == W
+                new_p[t-1] = '0'*W
             else:
-                new_p[-t-1] = '1'*len(prt[0])
+                assert len(new_p[-t-1]) == W
+                new_p[-t-1] = '1'*W
         score = count_pass_vertical(transpose(new_p), k)
         if score == len(prt[0]):
             return True
@@ -90,7 +92,7 @@ def step(prt, n_step, scores_a, scores_b, k):
 
 if __name__ == '__main__':
 
-    sys.stdin = open('sample_input.txt', 'r')
+    sys.stdin = open('newsample.txt', 'r')
     T = int(input())
     for test_case in range(1, T+1):
 
@@ -100,7 +102,6 @@ if __name__ == '__main__':
         prt = []
         for d in range(D):
             prt.append(input().replace(' ', ''))
-
         
         # vertical view
         prt_T = transpose(prt)
