@@ -22,7 +22,7 @@ class Protection():
 
     def count_pass(self):
         cnt = 0
-        for w in range(self.W):
+        for w in range(len(self.p_T)):
             if '0'*self.K in self.p_T[w] or '1'*self.K in self.p_T[w]:
                 cnt+=1
         return cnt
@@ -33,7 +33,7 @@ def get_priority_idx(prt_list, D, W, K):
     
     # to a
     scores_a = []; scores_b = []
-    for d in range(D):
+    for d in range(len(prt_list)):
         control_prt = prt_list.copy()
         control_prt[d] = '0'*W
         pc = Protection(control_prt, D, W, K)
@@ -53,8 +53,8 @@ def argsort(seq):
             
 def step(prt_list, D, W, K, n_step, scores_a, scores_b):
     
-    a_list = [i+1 for i in range(D)]
-    b_list = [-i-1 for i in range(D)]
+    a_list = [i+1 for i in range(len(prt_list))]
+    b_list = [-i-1 for i in range(len(prt_list))]
     pairs = itertools.combinations(a_list + b_list, n_step)
     
     scores = []; pair_list = []
@@ -127,10 +127,7 @@ if __name__=='__main__':
         #print ('{} / {}'.format(p.count_pass(), p.W))
         
         for s in range(1, K+1):
-            try:
-                result = step(prt_list, D, W, K, s, scores_a, scores_b)
-            except:
-                result = 0
+            result = step(prt_list, D, W, K, s, scores_a, scores_b)
             if result:
                 break
         if not result:
