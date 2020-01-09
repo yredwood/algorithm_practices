@@ -5,6 +5,13 @@ import itertools
 def argsort(seq):
     return sorted(range(len(seq)), key=seq.__getitem__)
 
+def unique(seq):
+    new_list = []
+    for s in seq:
+        if s not in new_list:
+            new_list.append(s)
+    return new_list
+
 def count_pass_vertical(pT, k):
     cnt = 0
     for w in range(len(pT)):
@@ -45,35 +52,32 @@ def step(prt, n_step, scores_a, scores_b, k):
     b_list = [-i-1 for i in range(D)]
     tuples = itertools.combinations(a_list + b_list, n_step)
     
-#    # get sorted tuples
-#    scores = []; sorted_tuples = []
-#    for tup in tuples:
-#        s = 0
-#        for t in tup:
-#            if t > 0:
-#                s += scores_a[t-1]
-#            else:
-#                s += scores_b[-t-1]
-#        scores.append(s)
-#        sorted_tuples.append(tup)
-#
-#    idx = argsort(scores)[::-1]
-#    sorted_tuples = [sorted_tuples[i] for i in idx]
-    
+    # get sorted tuples
+    scores = []; sorted_tuples = []
     for tup in tuples:
+        s = 0
+        for t in tup:
+            if t > 0:
+                s += scores_a[t-1]
+            else:
+                s += scores_b[-t-1]
+        scores.append(s)
+        sorted_tuples.append(tup)
+
+    idx = argsort(scores)[::-1]
+    sorted_tuples = [sorted_tuples[i] for i in idx]
+    
+    for tup in sorted_tuples:
 
         # remove tuples with same idx
         positive_tup = []
-        flag = 0
         for t in tup:
             if t > 0:
                 _t = t-1
             else:
                 _t = -t-1
-            if _t in positive_tup:
-                flag = 1
             positive_tup.append(_t)
-        if flag:
+        if len(unique(positive_tup)) != len(positive_tup):
             continue
 
         new_p = prt.copy()
@@ -85,12 +89,13 @@ def step(prt, n_step, scores_a, scores_b, k):
         score = count_pass_vertical(transpose(new_p), k)
         if score == len(prt[0]):
             return True
+
     return False
     
 
 if __name__ == '__main__':
 
-    sys.stdin = open('sample_input.txt', 'r')
+    sys.stdin = open('newsample.txt', 'r')
     T = int(input())
     for test_case in range(1, T+1):
 
