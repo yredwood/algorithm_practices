@@ -2,144 +2,177 @@ import sys
 import itertools
 
 
-class Protection():
-    def __init__(self, prt_list, K):
-        
-        self.D = len(prt_list)
-        self.W = len(prt_list[0])
-        self.K = K
-        self.p = prt_list
-        #assert len(self.p) == D
-        
-        self.p_T = []
-        for w in range(self.W):
-            self.p_T.append(
-                ''.join([p[w] for p in prt_list])
-            )
-        #assert len(self.p_T) == W
-        # a: 0, b: 1
-
-    def count_pass(self):
-        cnt = 0
-        for w in range(len(self.p_T)):
-            if '0'*self.K in self.p_T[w] or '1'*self.K in self.p_T[w]:
-                cnt+=1
-        return cnt
-
-def get_priority_idx(prt_list, K):
-    D = len(prt_list)
-    W = len(prt_list[0])
-
-    p = Protection(prt_list, K)
-    control_cnt = p.count_pass()
-    
-    # to a
-    scores_a = []; scores_b = []
-    for d in range(len(prt_list)):
-        control_prt = prt_list.copy()
-        control_prt[d] = '0'*W
-        pc = Protection(control_prt, K)
-        score = pc.count_pass() - control_cnt
-        scores_a.append(score)
-
-        control_prt = prt_list.copy()
-        control_prt[d] = '1'*W
-        pc = Protection(control_prt, K)
-        score = pc.count_pass() - control_cnt
-        scores_b.append(score)
-        
-    return scores_a, scores_b
-
 def argsort(seq):
     return sorted(range(len(seq)), key=seq.__getitem__)
-            
-def step(prt_list, K, n_step, scores_a, scores_b):
-    D = len(prt_list)
-    W = len(prt_list[0])
+
+def unique(seq):
+    new_list = []
+    for s in seq:
+        if s not in new_list:
+            new_list.append(s)
+    return new_list
+
+def count_pass_vertical(pT, k):
+    cnt = 0
+    for w in range(len(pT)):
+        if ('0'*k in pT[w]) or ('1'*k in pT[w]):
+            cnt += 1
+    return cnt
+
+def transpose(prt):
+    pT = []
+    for w in range(len(prt[0])):
+        pT.append(''.join([p[w] for p in prt]))
+    return pT
+
+def get_priority_idx(p, k):
     
-    a_list = [i+1 for i in range(D)]
-    b_list = [-i-1 for i in range(D)]
-    pairs = itertools.combinations(a_list + b_list, n_step)
-    
-    scores = []; pair_list = []
-    for tup in pairs:
+    index_cnt = count_pass_vertical(transpose(p), k)
+    scores_a, scores_b = [], []
+    for _d in range(len(p)):
+        changed_p = p.copy()
+        changed_p[_d] = '0'*len(p[0])
+        score = count_pass_vertical(transpose(changed_p), k)
+        scores_a.append(score)
+
+        changed_p[_d] = '1'*len(p[0])
+        score = count_pass_vertical(transpose(changed_p), k)
+        scores_b.append(score)
+
+    return scores_a, scores_b
+
+def sort_by_priority(input_tuples, score_a, score_b):
+    scores = []
+    for itup in input_tuples:
         s = 0
-        for t in tup:
-            if t > 0:
-                s += scores_a[t-1]
+        for t in itup:
+            if t>0:
+                s+=score_a[t-1]
             else:
-                s += scores_b[-t-1]
+                s+=score_b[-t-1]
         scores.append(s)
-        pair_list.append(tup)
+    idx = argsort(scores)
+    output_tuples = [input_tuples[i] for i in idx]
+    return output_tuples
 
 
-    idx = argsort(scores)[::-1]
-    sorted_pairs = [pair_list[i] for i in idx]
-    sorted_scores = [scores[i] for i in idx]
-    
-    for i, tup in enumerate(sorted_pairs):
-        #print (tup, sorted_scores[i])
+def get_complementary_set(input_list, D):
+    input_abs = [abs(i) for i in input_list]
+    output_list = []
+    for i in range(-D,D):
+        if (abs(i) not in input_abs) and (i!=0):
+            output_list.append(i)
+    return output_list
 
-        positive_tups = []
-        flag = 0
-        for t in tup:
-            if t > 0:
-                _t = t-1
+
+def step(prt, prev_result, k, score_a, score_b):
+
+    D = len(prt)
+    W = len(prt[0])
+
+    tuples = prev_result['tuples']
+    states = prev_result['states']
+#    priority = prev_result['priority']
+
+    if len(tuples)==0:
+        exclude_list = [i for i in range(-D,D) if i!=0]
+        output_result = {}
+        output_result['tuples'] = [[e] for e in exclude_list] # exclude idx list
+        output_result['states'] = [] # excluded cell state
+
+        for e in exclude_list:
+            new_prt = prt.copy()
+            if e > 0:
+                new_prt[e-1] = '0'*W
             else:
-                _t = -t-1
-            if _t in positive_tups:
-                flag = 1 
+                new_prt[-e-1] = '1'*W
 
-            positive_tups.append(_t)
-        if flag:
-            continue
+            score = count_pass_vertical(transpose(new_prt), k)
+            if score == len(prt[0]):
+                return output_result, True
+            output_result['states'].append(new_prt)
 
+    else:
+        output_result = {}
+        output_result['tuples'] = [] # exclude idx list
+        output_result['states'] = [] # excluded cell state
 
-        new_prt = prt_list.copy()
-        for t in tup:
-            if t > 0:
-                new_prt[t-1] = '0'*W
-            else:
-                new_prt[-t-1] = '1'*W
+        tuples = sort_by_priority(tuples, score_a, score_b)
+        for i in range(len(tuples)):
+            tup = tuples[i]
+            exclude_list = get_complementary_set(tup, D)
 
-        p = Protection(new_prt, K)
-        score = p.count_pass()
-        if score == W:
-            return True
+            for e in exclude_list:
+                new_prt = states[i].copy()
+                if e > 0:
+                    new_prt[e-1] = '0'*W
+                else:
+                    new_prt[-e-1] = '1'*W
+
+                score = count_pass_vertical(transpose(new_prt), k)
+                if score == len(prt[0]):
+                    return output_result, True
+                output_result['tuples'].append(tup + [e])
+                output_result['states'].append(new_prt)
+
+    return output_result, False
+            
+            
     
-    return False
 
-
-if __name__=='__main__':
-
+if __name__ == '__main__':
+    
+#    sys.stdin = open('newsample.txt', 'r')
     sys.stdin = open('sample_input.txt', 'r')
     T = int(input())
     for test_case in range(1, T+1):
 
         D, W, K = map(int, input().split(' '))
-        
-        prt_list = []
+    
+        # horizontal view
+        prt = []
         for d in range(D):
-            prt_list.append(input().replace(' ', ''))
+            prt.append(input().replace(' ', ''))
+        
+        # vertical view
+        prt_T = transpose(prt)
 
-        W = len(prt_list[0])
-
-        p = Protection(prt_list, K)
-        if p.count_pass() == W:
+        # check if it is pass
+        cnt = count_pass_vertical(prt_T, K)
+        if cnt == W:
             print ('#{} {}'.format(test_case, 0))
             continue
-
-        scores_a, scores_b = get_priority_idx(prt_list, K)
-        #print ('{} / {}'.format(p.count_pass(), p.W))
         
-        for s in range(1, K+1):
-            result = step(prt_list, K, s, scores_a, scores_b)
-            if result:
-                break
-        if not result:
-            s = K
+        score_a, score_b = get_priority_idx(prt, K)
+        out_result = {'tuples': [], 'states': [], 'priority': []}
+        for _step in range(1, K):
 
-        print ('#{} {}'.format(test_case, s))
+            out_result, exit_cond = step(prt, out_result, K, score_a, score_b)
+            if exit_cond:
+                break
+
+        if not exit_cond:
+            _step = K
+
+        print ('#{} {}'.format(test_case, _step))
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
