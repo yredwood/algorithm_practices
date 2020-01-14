@@ -77,7 +77,8 @@ def step(prt_list, K, n_step):
     pairs = itertools.combinations([i+1 for i in range(D)], n_step)
     for tup in pairs:
         # theres len(tup)**2 subtuples
-        if K > 2 * n_step:
+#        if K > 2 * n_step:
+        if True:
             subtuples = []
             msign_idx = itertools.combinations([0,1], len(tup))
             for m in msign_idx:
@@ -95,6 +96,7 @@ def step(prt_list, K, n_step):
             subtuples.append(_sub)
             subtuples.append([-s for s in _sub])
         
+        print (subtuples)
         for _t in subtuples:
             new_prt = prt_list.copy()
             for t in _t:
