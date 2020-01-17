@@ -1,7 +1,8 @@
 import sys
+sys.stdin = open("sample_input.txt", "r")
+
 import itertools
 
-sys.stdin = open("sample_input.txt", "r")
 T = int(input())
 for test_case in range(1, T+1):
     
@@ -41,5 +42,5 @@ for test_case in range(1, T+1):
                 cost = i3 * month3 + sum([min(month, day*plans[_i]) for _i in other_months])
                 if cost < min_cost:
                     min_cost = cost
-    
+
     print ('#{} {}'.format(test_case, min_cost))
