@@ -20,6 +20,12 @@ void print(int arr[], int n)
     cout << endl;
 }
 
+void init(int arr[], int n)
+{
+    for (int i=0; i<n; i++)
+        arr[i] = 0;
+}
+
 int get_profit_from_block(int mblock[], int M, int C)
 {
     int max_profit = 0;
@@ -68,7 +74,9 @@ int main(int argc, char** argv)
         // get inputs
         int N, M, C;
         cin >> N >> M >> C;
-        int honey_map[N][N] = {0};
+        int honey_map[N][N];
+        for (int i =0; i < N; i++)
+            init(honey_map[i], N);
 
         for (int i = 0; i < N; i++)
             for (int j = 0; j < N; j++)
@@ -77,7 +85,8 @@ int main(int argc, char** argv)
         int max_profit = 0;
         
         // 1. different row 
-        int line_max_profits[N] = {0};
+        int line_max_profits[N];
+        init(line_max_profits, N);
         int profit = 0;
         for (int n = 0; n < N; n++)
         {
