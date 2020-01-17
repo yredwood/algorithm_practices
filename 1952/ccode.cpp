@@ -13,16 +13,6 @@ int min(int a, int b)
         return b;
 }
 
-void print(int* vec, int length)
-{
-    for (int i = 0; i < length; i++)
-    {
-        cout << vec[i] << " ";
-    }
-    cout << endl;
-}
-
-
 
 int main(int argc, char** argv)
 {   
