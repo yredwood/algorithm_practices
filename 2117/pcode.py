@@ -31,7 +31,7 @@ def get_max_house_from_xy(a, b, city_map):
 
         profit = revenue - cost
         
-        if profit > 0 and prev_num_houses > max_house:
+        if profit >= 0 and prev_num_houses > max_house:
             max_house = prev_num_houses
 
     return max_house       
