@@ -13,7 +13,7 @@ for test_case in range(1, T+1):
 
     for i in range(N):
         for j in range(N):
-            foot_mat[i][j] += food_mat[j][i]
+            food_mat[i][j] += food_mat[j][i]
 
 
     comb1 = itertools.combinations(range(N), N//2)
