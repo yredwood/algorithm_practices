@@ -1,8 +1,6 @@
 import sys
 sys.stdin = open('sample_input.txt')
 
-import time
-
 
 class Cells:
     def __init__(self, init):
@@ -33,24 +31,16 @@ class Cells:
         new_cell_lists = [] # (x,y)
         new_cell_lifes = []
     
-
-        t_0 = 0
-        t_1 = 0
-        t100 = time.time()
-
         for i in range(len(self.cell_status)):
             if self.cell_status[i] == 2:
                 # dead: do nothing
                 pass
 
             elif self.cell_status[i] == 0:
-                t0 = time.time()
                 # deactivated
                 self.time_tob_activated[i] -= 1
                 if self.time_tob_activated[i] == 0:
                     self.cell_status[i] = 1
-
-                t_0 += time.time() - t0
 
             elif self.cell_status[i] == 1:
                 # activated: reproduce and decrease ttd
@@ -63,12 +53,6 @@ class Cells:
                     except:
                         new_cell_lists.append(np)
                         new_cell_lifes.append(self.cell_life[i])
-
-#                    if np not in set(self.cell_coord):
-#                        t0 = time.time()
-#                        new_cell_lists.append(np)
-#                        new_cell_lifes.append(self.cell_life[i])
-#                        t_1 += time.time() - t0
 
                 self.time_to_dead[i] -= 1
                 if self.time_to_dead[i] == 0:
