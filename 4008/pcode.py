@@ -12,17 +12,12 @@ def calc(nums, ops):
         elif op==2:
             return num1*num2
         else:
-            if num2==0:
-                return -1e9
-            if num1*num2 < 0:
-                return num1//num2+1
-            return num1//num2
-        
+            a = num1/num2
+            return int(a)
+
     nums = nums.copy()
     for i, op in enumerate(ops):
         out = operation(op, nums[i], nums[i+1])
-        if out == -1e9:
-            return 0
         nums[i+1] = out
     return out
 
@@ -40,17 +35,24 @@ for test_case in range(1,T+1):
     for i, ops in enumerate(_operators):
         operators += [i] * ops
 
-    max_value = -1e9
-    min_value = 1e9
+    max_value = -1e10
+    min_value = 1e10
     # operator comb 4
     combs = itertools.permutations(operators, N-1)
+    uniq = {}
     for c in combs:
-        # (c[0], c[1], ...)
-        output = calc(numbers, c)
-        if output > max_value:
-            max_value = output
-        if output < min_value:
-            min_value = output
+        try:
+            _ = uniq[c]
+        except:
+            # (c[0], c[1], ...)
+            output = calc(numbers, c)
+            if output == 0.1:
+                continue
+            if output > max_value:
+                max_value = output
+            if output < min_value:
+                min_value = output
 
+        uniq[c] = 1
 
     print ('#{} {}'.format(test_case, max_value-min_value))
