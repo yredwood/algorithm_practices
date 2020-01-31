@@ -46,11 +46,8 @@ int main(int argc, char** argv){
                 }
             }
             S = abs( (xs[0]*ys[1] + xs[1]*ys[2] + xs[2]*ys[0]) - (xs[0]*ys[2] + xs[2]*ys[1] + xs[1]*ys[0]));
-//            for (int i=0;i<3;i++)
-//                cout << xs[i] << "," << ys[i] << " | ";
-//            cout << "  || S " << S << endl;
-//            if (S >= A && S <= B)
-//                cnt++;
+            if (S >= A && S <= B)
+                cnt++;
 
         } while (prev_permutation(v.begin(), v.end()));
         cout << "#" << test_case << " " << cnt << endl;
