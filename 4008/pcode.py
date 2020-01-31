@@ -26,33 +26,40 @@ T = int(input())
 for test_case in range(1,T+1):
     
     N = int(input())
-    _operators = list(map(int, input().split()))
+    operators = list(map(int, input().split()))
     numbers = list(map(int, input().split()))
     assert len(numbers) == N
 
-    # change operators to [2, 3, 0, 0] to [0, 0, 1, 1, 1]
-    operators = []
-    for i, ops in enumerate(_operators):
-        operators += [i] * ops
-
     max_value = -1e10
     min_value = 1e10
-    # operator comb 4
-    combs = itertools.permutations(operators, N-1)
-    uniq = {}
-    for c in combs:
-        try:
-            _ = uniq[c]
-        except:
-            # (c[0], c[1], ...)
-            output = calc(numbers, c)
-            if output == 0.1:
-                continue
-            if output > max_value:
-                max_value = output
-            if output < min_value:
-                min_value = output
 
-        uniq[c] = 1
+    # (n-1) Comb (len(op0)) (n-1-len(op0)) Comb len(op1) ...
+    c0 = itertools.combinations(range(N-1), operators[0])
+    for _c0 in c0:
+        leftset0 = set(range(N-1)) - set(_c0)
+        c1 = itertools.combinations(leftset0, operators[1])
+        for _c1 in c1:
+            leftset1 = leftset0 - set(_c1)
+            c2 = itertools.combinations(leftset1, operators[2])
+            for _c2 in c2:
+                leftset2 = leftset1 - set(_c2)
+                # loop starts here
 
+                # _c0: (0,3,5) -> op0 index
+                # _c1: (1,2) -> op1 index
+                # _c2: (8,9) -> op2 index
+                # leftset2: (6,7) -> op3 index
+                current_ops = [0 for _ in range(N-1)]
+                for c in _c1:
+                    current_ops[c] = 1
+                for c in _c2:
+                    current_ops[c] = 2
+                for c in leftset2:
+                    current_ops[c] = 3
+
+                output = calc(numbers, current_ops)
+                if output > max_value:
+                    max_value = output
+                if output < min_value:
+                    min_value = output
     print ('#{} {}'.format(test_case, max_value-min_value))
