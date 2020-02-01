@@ -12,7 +12,7 @@ for test_case in range(1,T+1):
     numbers += numbers
     for i in range(N):
         _num = numbers[i:i+N//4]
-        dec = int((_num, 16)
+        dec = int(_num, 16)
         if dec not in sums:
             sums.append(dec)
 
