@@ -51,10 +51,8 @@ for test_case in range(1, T+1):
         x, y, m, k = map(int, input().split())
         atom_list.add_list(x*2,y*2,m,k)
         
-    for _t in range(2000):
+    for _t in range(4000):
         atom_list.step_half_sec()
-#        print ('====',_t,'====')
-#        for k, v in atom_list.d.items():
-#            print (k, v)
+
 
     print ('#{} {}'.format(test_case, atom_list.energy))
