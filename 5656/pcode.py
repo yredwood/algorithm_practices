@@ -57,7 +57,6 @@ def shoot_1(brick_list):
             remove_dict = {(w,height): 1}
             remove_dict = bomb(bricks, (w,height), remove_dict)
 
-
             new_bricks = [[] for _ in range(len(bricks))]
             for _w in range(len(bricks)):
                 new_bricks[_w] = [br_wh for i,br_wh in enumerate(bricks[_w]) if (_w,i) not in remove_dict]
