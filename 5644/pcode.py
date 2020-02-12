@@ -59,8 +59,6 @@ class ApMap():
         
         out = self.get_val(xy1) + self.get_val(xy2)
 
-        out1 = [self.get_val(xy1)]
-        out2 = [self.get_val(xy2)]
         for t in range(len(p1)):
             xy1 = move(xy1, p1[t])
             xy2 = move(xy2, p2[t])
@@ -72,7 +70,6 @@ class ApMap():
                 for _k in k1:
                     if _k in k2:
                         shared = True
-
             except:
                 pass
 
@@ -87,21 +84,11 @@ class ApMap():
                         if val > _maxval:
                             _maxval = val
 
-                out1.append(_maxval // 2)
-                out2.append(_maxval // 2)
-
-
                 out += _maxval
             else:
                 out += self.get_val(xy1) + self.get_val(xy2)
 
-                out1.append(self.get_val(xy1))
-                out2.append(self.get_val(xy2))
-    
         return out
-
-
-        
 
 T = int(input())
 for test_case in range(1, T+1):
