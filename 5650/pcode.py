@@ -93,6 +93,7 @@ def get_score(xy, d, start_points, maps):
     else:
         for _xy, _ds in sp_stacks.items():
             start_points[_xy][_ds[0]] = (score - _ds[1]) * 2 + 1
+    return start_points
 #    if black_hole:
 #        start_points[xy][d] = score 
 #    else:
@@ -126,7 +127,7 @@ for test_case in range(1, T+1):
     for xy, score in start_points.items():
         for d in directions:
             if score[d] == -2:
-                get_score(xy, d, start_points, maps)
+                start_points = get_score(xy, d, start_points, maps)
 
         
     max_score = -2
