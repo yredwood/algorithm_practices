@@ -13,15 +13,13 @@ def move(xy, d):
         y = y + 1
     return x,y
 
-
-
 def get_score(xy, d, start_points, maps):
     # it must at least set start_points[xy][d]
     nx, ny = xy
     nd = d
     black_hole = False
     score = 0
-    sp_stacks = {(nx, ny): (d, score)}
+    sp_stacks = {(nx, ny): (nd, score)}
     while True:
         nx, ny = move((nx,ny), nd)
         # 1. return start ending
@@ -84,21 +82,20 @@ def get_score(xy, d, start_points, maps):
             continue
 
         # 5. else
-        sp_stacks[(nx,ny)] = (d, score)
+        sp_stacks[(nx,ny)] = (nd, score)
 
     # set start_points scores
-    if black_hole:
-        for _xy, _ds in sp_stacks.items():
-            start_points[_xy][_ds[0]] = score - _ds[1]
-    else:
-        for _xy, _ds in sp_stacks.items():
-            start_points[_xy][_ds[0]] = (score - _ds[1]) * 2 + 1
-    return start_points
 #    if black_hole:
-#        start_points[xy][d] = score 
+#        for _xy, _ds in sp_stacks.items():
+#            start_points[_xy][_ds[0]] = score - _ds[1]
 #    else:
-#        start_points[xy][d] = score * 2 + 1
+#        for _xy, _ds in sp_stacks.items():
+#            start_points[_xy][_ds[0]] = (score - _ds[1]) * 2 + 1
 
+    if black_hole:
+        start_points[xy][d] = score 
+    else:
+        start_points[xy][d] = score * 2 + 1
 
 
 T = int(input())
@@ -127,8 +124,7 @@ for test_case in range(1, T+1):
     for xy, score in start_points.items():
         for d in directions:
             if score[d] == -2:
-                start_points = get_score(xy, d, start_points, maps)
-
+                get_score(xy, d, start_points, maps)
         
     max_score = -2
     for xy, score in start_points.items():
