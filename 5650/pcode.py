@@ -13,7 +13,7 @@ def move(xy, d):
         y = y + 1
     return x,y
 
-def get_score(xy, d, start_points, maps):
+def get_score(xy, d, start_points, maps, verbose=False):
     # it must at least set start_points[xy][d]
     nx, ny = xy
     nd = d
@@ -77,7 +77,7 @@ def get_score(xy, d, start_points, maps):
 
         # 4. worm hole
         if maps[nx][ny] > 5 and maps[nx][ny] <= 10:
-            idx = worm_holes[maps[nx][ny]][0] != (nx,ny)
+            idx = worm_holes[maps[nx][ny]][0] == (nx,ny)
             nx, ny = worm_holes[maps[nx][ny]][int(idx)]
             continue
 
